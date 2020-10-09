@@ -1,13 +1,23 @@
+//Fonctions complémentaires: led de signalement lecture valeur capteur;
+//led de signalement enregsitrement carte SD
+//Affichage à chaque boot "nouvelle capture"
+
+
+//bibliothèque horloge
 #include "RTClib.h"
+//bibliothèque Capteur de temp. et Hygro.
 #include "DHT.h"
+//bibliothèque carte SD
+#include "SPI.h"
+#include "SD.h"
 
 #define DHTPIN 2 
 #define DHTTYPE DHT22 
 
 RTC_DS1307 rtc;
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-
 DHT dht(DHTPIN, DHTTYPE);
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+const int chipSelect = 10;
 
 void setup() {
   
@@ -22,19 +32,35 @@ void setup() {
     Serial.flush();
     abort();
   }
-  
 
+  if (!SD.begin(chipSelect)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    while (1);
+  }
+
+  //informe du lancement d'un nouvelle session d'enregistrement
+  Serial.println("Nouvelle session d'enregistrement");
+  
 }
 
 void loop() {
   
   delay(3000);
-  giveTime();
-  readSensors();
+  readTime();
+  String dataString=readSensors();
+  Serial.println(dataString);
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+  }
+  
 }
 
-void readSensors(){
 
+String readSensors(){
+  String dataString="";
    // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
@@ -45,21 +71,17 @@ void readSensors(){
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t) || isnan(f)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
-    return;
+    dataString="Failed to read from DHT sensor!";
+    
+    return dataString;
   }
   
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%"));
-  Serial.print(",");
-  Serial.print(F("  Temperature: "));
-  Serial.print(t);
-  Serial.println(F("°C "));
-  Serial.print(",");
+  dataString=String(h)+"%"+","+String(t)+"°C"+",";
+
+  return dataString;
 }
 
-void giveTime(){
+void readTime(){
 
   DateTime now = rtc.now();
   Serial.print(now.day(), DEC);
@@ -68,9 +90,9 @@ void giveTime(){
   Serial.print('/');
   Serial.print(now.year(), DEC);
   Serial.print(",");
-  Serial.print(" (");
+  Serial.print("(");
   Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-  Serial.print(") ");
+  Serial.print(")");
   Serial.print(",");
   Serial.print(now.hour(), DEC);
   Serial.print(':');
