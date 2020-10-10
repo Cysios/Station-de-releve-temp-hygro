@@ -1,6 +1,4 @@
-//Fonctions complémentaires: led de signalement lecture valeur capteur;
-//led de signalement enregsitrement carte SD
-//Affichage à chaque boot "nouvelle capture"
+//test
 
 
 //bibliothèque horloge
