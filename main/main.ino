@@ -1,4 +1,5 @@
-//test
+//Programme de station de releve arduino pour temperature et hygrometrie
+//Auteur: Maxime MERKLEN
 
 
 //bibliothèque horloge
@@ -24,33 +25,38 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+  //Lancement du programme pour le capteur DHT
   dht.begin();
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
     Serial.flush();
     abort();
   }
-
+  //Contrôle que la carte SD est bien disponible pour enregistrement
   if (!SD.begin(chipSelect)) {
     Serial.println("Card failed, or not present");
     // don't do anything more:
     while (1);
   }
-
-  //informe du lancement d'un nouvelle session d'enregistrement
-  Serial.println("Nouvelle session d'enregistrement");
+  //informe du lancement d'une nouvelle session d'enregistrement
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.println("Nouvelle session d'enregistrement");
+    dataFile.close();
+  }
   
 }
 
 void loop() {
   
-  delay(3000);
+  delay(60000);
   readTime();
   String dataString=readSensors();
-  Serial.println(dataString);
+  String timeString=readTime();
+  Serial.println(dataString+timeString);
   File dataFile = SD.open("datalog.txt", FILE_WRITE);
   if (dataFile) {
-    dataFile.println(dataString);
+    dataFile.println(dataString+timeString);
     dataFile.close();
   }
   
@@ -75,27 +81,14 @@ String readSensors(){
   }
   
   dataString=String(h)+"%"+","+String(t)+"°C"+",";
-
   return dataString;
 }
 
-void readTime(){
+String readTime(){
 
+  String timeString="";
   DateTime now = rtc.now();
-  Serial.print(now.day(), DEC);
-  Serial.print('/');
-  Serial.print(now.month(), DEC);
-  Serial.print('/');
-  Serial.print(now.year(), DEC);
-  Serial.print(",");
-  Serial.print("(");
-  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-  Serial.print(")");
-  Serial.print(",");
-  Serial.print(now.hour(), DEC);
-  Serial.print(':');
-  Serial.print(now.minute(), DEC);
-  Serial.print(':');
-  Serial.print(now.second(), DEC);
-  Serial.print(",");
+  timeString=String(now.day())+"/"+String(now.month())+"/"+String(now.year())+" "+String(now.hour())+":"+String(now.minute())+":"+String(now.second());
+
+  return timeString;  
 }
