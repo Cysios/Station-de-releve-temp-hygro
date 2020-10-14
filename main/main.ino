@@ -1,4 +1,5 @@
-//Programme de station de releve arduino pour temperature et hygrometrie
+//Programme de station de releve arduino pour temperature et hygrometrie 
+// v0.5.0
 //Auteur: Maxime MERKLEN
 
 
