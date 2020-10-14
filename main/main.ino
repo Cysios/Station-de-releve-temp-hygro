@@ -49,20 +49,19 @@ void setup() {
 
 void loop() {
   
-  delay(60000);
-  readTime();
-  String dataString=readSensors();
-  String timeString=readTime();
-  Serial.println(dataString+timeString);
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
-  if (dataFile) {
-    dataFile.println(dataString+timeString);
-    dataFile.close();
+  delay(60000); //Fréquence de relève de la température et hygrométrie
+  String dataString=readSensors(); // Récupère valeur des capteurs
+  String timeString=readTime(); //Récupère horadatage
+  Serial.println(dataString+timeString); //affiche au moniteur la relève du capteur et son horodatage
+  File dataFile = SD.open("datalog.txt", FILE_WRITE); // Ouvre ou créé un fichier sur la carte SD disponible
+  if (dataFile) { // Si pas d'erreur alors
+    dataFile.println(dataString+timeString); // Ecrit dans le fichier la valeur de 
+    dataFile.close(); //  Ferme le fichier (requis, sinon il ne peut plus le réouvrir sur une autre session
   }
   
 }
 
-
+//Fonction retourne la valeur des capteurs (température et hygrométrie)
 String readSensors(){
   String dataString="";
    // Reading temperature or humidity takes about 250 milliseconds!
@@ -71,19 +70,20 @@ String readSensors(){
   // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
+  // float f = dht.readTemperature(true);
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
+  if (isnan(h) || isnan(t)) { // Check if you need || isnan(f)
     dataString="Failed to read from DHT sensor!";
     
     return dataString;
   }
   
-  dataString=String(h)+"%"+","+String(t)+"°C"+",";
+  dataString=String(h)+"%"+","+String(t)+"°C"+","; // concaténation des valeurs en string
   return dataString;
 }
 
+//Fonction retourne la date FORMAT (JOUR/MOIS/ANNEE HH:MM:SS)
 String readTime(){
 
   String timeString="";
