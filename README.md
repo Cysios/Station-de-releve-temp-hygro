@@ -5,7 +5,7 @@
 Projet pour Arduino UNO dont la finalité est de mesurer:
 * la température et l'hygrométrie
 * de manière autonome : Sauvegarde les données sur une carte SD (csv)
-* sur une durée de temps de 1 mois
+* sur une durée de temps de 1 mois minimum(dépend le capacité de stockage)
 
 ### Contexte 
 Mesurer ces grandeurs dans une cave pour vérifier les conditions de conservation du vin qui y est stocké.
@@ -19,7 +19,8 @@ Le système Arduino permet de répondre à ces besoins avec un coup limité et u
 * DHT 22(code configuré par défaut pour DHT22) ou DHT11 https://learn.adafruit.com/dht/overview  
 * Velleman VMA202 : ARDUINO®COMPATIBLE DATA LOGGING SHIELD  https://www.velleman.eu/products/view/?id=435508
 * 3 LEDS: Rouge,Jaune,Verte  
-* Résistances: 3x220 ohm; 1x10K ohm  
+* Résistances: 3x220 ohm; 1x10K ohm
+* Carte SD (8Go)
 
 ### Codes
 
