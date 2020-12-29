@@ -21,7 +21,7 @@ const int chipSelect = 10;
 int RedLED=5;
 int GreenLED=6;
 int YellowLED=7;
-int timeRead=60000;
+unsigned int timeRead=60000;
 
 void setup() {
   
