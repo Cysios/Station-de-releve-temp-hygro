@@ -1,5 +1,5 @@
 //Programme de station de releve arduino pour temperature et hygrometrie 
-// v0.6.0
+// v0.6.1
 //Auteur: Maxime MERKLEN
 
 
@@ -21,6 +21,7 @@ const int chipSelect = 10;
 int RedLED=5;
 int GreenLED=6;
 int YellowLED=7;
+int timeRead=60000;
 
 void setup() {
   
@@ -60,7 +61,7 @@ void setup() {
 
 void loop() {
   
-  delay(5000); //Fréquence de relève de la température et hygrométrie
+  delay(timeRead); //Fréquence de relève de la température et hygrométrie
   String dataString=readSensors(); // Récupère valeur des capteurs
   String timeString=readTime(); //Récupère horadatage
   Serial.println(dataString+timeString); //affiche au moniteur la relève du capteur et son horodatage
