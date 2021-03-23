@@ -11,10 +11,30 @@
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 DHT dht(DHTPIN, DHTTYPE);
+int pinBouton;
 
 
 void setup() {
-  // set up the LCD's number of columns and rows:
+    dht.begin();
+    pinBouton = 8;
+    pinMode(pinBouton,INPUT_PULLUP);
+}
+
+void loop() {
+  delay(2000);
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+  boolean etatBouton = digitalRead(pinBouton);
+  //test des conditions
+  if (etatBouton==LOW)//test bouton
+  {
+    displayTemp(t, h);
+  }
+}
+
+void displayTemp(float t, float h){
+
+    // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
   lcd.print("Temp :  ");
@@ -22,14 +42,7 @@ void setup() {
   lcd.print("Hygro : ");
   lcd.setCursor(13,1);
   lcd.print("%");
-  dht.begin();
-}
-
-void loop() {
-  delay(2000);
-  float t = dht.readTemperature();
-  float h = dht.readHumidity();
-  lcd.setCursor(7,0);
+    lcd.setCursor(7,0);
   // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
   //lcd.setCursor(0, 1);
@@ -37,5 +50,8 @@ void loop() {
   lcd.print(t);
   lcd.setCursor(8 ,1);
   lcd.print(h);
+
+  delay(5000);
+  lcd.noDisplay();
   
 }
