@@ -1,5 +1,5 @@
 //Programme de station de releve arduino pour temperature et hygrometrie 
-// v0.6.1
+// v0.7.0
 //Auteur: Maxime MERKLEN
 
 
@@ -10,6 +10,8 @@
 //bibliothèque carte SD
 #include "SPI.h"
 #include "SD.h"
+//bibliothèque écran LCD
+#include <LiquidCrystal.h>
 
 #define DHTPIN 2 
 #define DHTTYPE DHT22 
@@ -21,7 +23,13 @@ const int chipSelect = 10;
 int RedLED=5;
 int GreenLED=6;
 int YellowLED=7;
-unsigned int timeRead=60000;
+unsigned int timeRead=3000;
+
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 0, en = 1, d4 = 8, d5 = 9, d6 = 11, d7 = 12;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 
 void setup() {
   
@@ -56,6 +64,8 @@ void setup() {
     dataFile.println("Nouvelle session d'enregistrement");
     dataFile.close();
   }
+
+  
   
 }
 
@@ -102,6 +112,7 @@ String readSensors(){
   
   dataString=String(h)+"%"+","+String(t)+"°C"+","; // concaténation des valeurs en string
   digitalWrite(YellowLED, LOW);
+  //displayTemp(t, h);
   return dataString;
 }
 
@@ -113,4 +124,29 @@ String readTime(){
   timeString=String(now.day())+"/"+String(now.month())+"/"+String(now.year())+" "+String(now.hour())+":"+String(now.minute())+":"+String(now.second());
 
   return timeString;  
+}
+
+//fonction afficher température
+void displayTemp(float t, float h){
+
+    // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print("Temp :  ");
+  lcd.setCursor(0,1);
+  lcd.print("Hygro : ");
+  lcd.setCursor(13,1);
+  lcd.print("%");
+    lcd.setCursor(7,0);
+  // set the cursor to column 0, line 1
+  // (note: line 1 is the second row, since counting begins with 0):
+  //lcd.setCursor(0, 1);
+  // print the number of seconds since reset:
+  lcd.print(t);
+  lcd.setCursor(8 ,1);
+  lcd.print(h);
+
+  delay(5000);
+  lcd.noDisplay();
+  
 }
