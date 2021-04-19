@@ -20,14 +20,11 @@ RTC_DS1307 rtc;
 DHT dht(DHTPIN, DHTTYPE);
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 const int chipSelect = 10;
-int RedLED=5;
-int GreenLED=6;
-int YellowLED=7;
 unsigned int timeRead=3000;
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 0, en = 1, d4 = 8, d5 = 9, d6 = 11, d7 = 12;
+const int rs = 3, en = 4, d4 = 5, d5 = 6, d6 = 7, d7 = 8;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
@@ -38,24 +35,20 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  //Intialisation sortie digital pour LEDs d'affcichage
-  pinMode(RedLED, OUTPUT);
-  pinMode(GreenLED, OUTPUT);
-  pinMode(YellowLED, OUTPUT);
 
   //Lancement du programme pour le capteur DHT
   dht.begin();
   if (! rtc.begin()) {
     //Serial.println("Couldn't find RTC");
     //Serial.flush();
-      digitalWrite(RedLED, HIGH);
+     // digitalWrite(RedLED, HIGH);
     abort();
   }
   //Contrôle que la carte SD est bien disponible pour enregistrement
   if (!SD.begin(chipSelect)) {
     //Serial.println("Card failed, or not present");
     // don't do anything more:
-      digitalWrite(RedLED, HIGH);
+    //  digitalWrite(RedLED, HIGH);
     while (1);
   }
   //informe du lancement d'une nouvelle session d'enregistrement
@@ -78,19 +71,20 @@ void loop() {
   File dataFile = SD.open("datalog.txt", FILE_WRITE); // Ouvre ou créé un fichier sur la carte SD disponible
   if (dataFile) { // Si pas d'erreur alors
     dataFile.println(dataString+timeString); // Ecrit dans le fichier la valeur de 
-    digitalWrite(GreenLED, HIGH);
+    //digitalWrite(GreenLED, HIGH);
     dataFile.close(); //  Ferme le fichier (requis, sinon il ne peut plus le réouvrir sur une autre session
-    digitalWrite(GreenLED, LOW);
+    //digitalWrite(GreenLED, LOW);
   }
   else{
-    digitalWrite(RedLED, HIGH);
+    //digitalWrite(RedLED, HIGH);
   }
+
   
 }
 
 //Fonction retourne la valeur des capteurs (température et hygrométrie)
 String readSensors(){
-  digitalWrite(YellowLED, HIGH);
+  //digitalWrite(YellowLED, HIGH);
   String dataString="";
    // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -103,16 +97,16 @@ String readSensors(){
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t)) { // Check if you need || isnan(f)
     dataString="Failed to read from DHT sensor!";
-    digitalWrite(RedLED, HIGH);//informe visuellement en cas d'erreur
+    //digitalWrite(RedLED, HIGH);//informe visuellement en cas d'erreur
     return dataString;
   }
   else {
-    digitalWrite(RedLED,LOW);
+    //digitalWrite(RedLED,LOW);
   }
   
   dataString=String(h)+"%"+","+String(t)+"°C"+","; // concaténation des valeurs en string
-  digitalWrite(YellowLED, LOW);
-  //displayTemp(t, h);
+  //digitalWrite(YellowLED, LOW);
+  displayTemp(t, h);
   return dataString;
 }
 
@@ -146,7 +140,7 @@ void displayTemp(float t, float h){
   lcd.setCursor(8 ,1);
   lcd.print(h);
 
-  delay(5000);
-  lcd.noDisplay();
+  //delay(5000);
+  //lcd.noDisplay();
   
 }
