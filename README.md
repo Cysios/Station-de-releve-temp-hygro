@@ -45,5 +45,8 @@ DHT.h
 SPI.h  
 SD.h  
 
+###Remarques
+Les PINs de l'Arduino 10;11;12;13 sont réservés au SHIELD VMA202 (cf. doc Velleman)
+
 # License
 [CeCILL v2.1](https://cecill.info/licences.fr.html)
