@@ -16,7 +16,7 @@ int pinBouton;
 
 void setup() {
     dht.begin();
-    pinBouton = 12;
+    pinBouton = 9;
     pinMode(pinBouton,INPUT_PULLUP);
 }
 
