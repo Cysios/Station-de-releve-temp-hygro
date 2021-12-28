@@ -1,38 +1,26 @@
-//Prototype v0.7.0
+/*
+  LCDdisplay.cpp - Library for display things.
+  Created by Maxime MERKLEN, April 20 2021.
+*/
 
-// include the library code:
-#include <LiquidCrystal.h>
-#include "DHT.h"
-#define DHTPIN 7
-#define DHTTYPE DHT22
+#include "Arduino.h"
+#include "LCDdisplay.h"
+#include "LiquidCrystal.h"
+
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 0, en = 1, d4 = 8, d5 = 9, d6 = 10, d7 = 11;
+const int rs = 3, en = 4, d4 = 5, d5 = 6, d6 = 7, d7 = 8;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-DHT dht(DHTPIN, DHTTYPE);
-int pinBouton;
 
+LCDdisplay:: LCDdisplay()
+{
 
-void setup() {
-    dht.begin();
-    pinBouton = 9;
-    pinMode(pinBouton,INPUT_PULLUP);
 }
 
-void loop() {
-  delay(2000);
-  float t = dht.readTemperature();
-  float h = dht.readHumidity();
-  boolean etatBouton = digitalRead(pinBouton);
-  //test des conditions
-  if (etatBouton==LOW)//test bouton
-  {
-    displayTemp(t, h);
-  }
-}
 
-void displayTemp(float t, float h){
+//fonction afficher température
+void  LCDdisplay::displayTemp(float t, float h){
 
     // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -54,4 +42,14 @@ void displayTemp(float t, float h){
   delay(5000);
   lcd.noDisplay();
   
+}
+
+
+//fonction afficher erreur
+void  LCDdisplay::displayERROR(String error){
+    lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print(error);
+  delay(5000);
+  lcd.noDisplay();
 }
